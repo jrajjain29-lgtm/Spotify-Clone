@@ -1,15 +1,19 @@
+
 import axios from 'axios';
 
-// One axios instance for the whole app.
-// baseURL '/api' + the Vite proxy => requests reach http://localhost:3000/api/...
-// withCredentials makes the browser send/receive your JWT cookie.
-const api = axios.create({ baseURL: '/api', withCredentials: true });
+const api = axios.create({
+    baseURL: `${import.meta.env.VITE_API_URL}/api`,
+    withCredentials: true
+});
 
-// If the cookie expires or is invalid, the backend answers 401: send the person to login.
+// If cookie expires or is invalid, redirect to login.
 api.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err.response?.status === 401 && !location.pathname.startsWith('/login')) {
+    if (
+      err.response?.status === 401 &&
+      !location.pathname.startsWith('/login')
+    ) {
       localStorage.removeItem('user');
       location.href = '/login';
     }
