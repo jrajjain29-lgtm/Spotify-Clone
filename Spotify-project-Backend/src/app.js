@@ -8,14 +8,32 @@ const musicRoutes = require('./routes/music.routes');
 
 const app = express();
 
+const allowedOrigins = [
+    'https://spotify-project-frontend.vercel.app',
+    'http://localhost:5173'
+    
+    
+];
+
 // Middleware
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+}));
+
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors({
-    origin: 'https://spotify-project-frontend.vercel.app/login',
-    credentials: true
-}));
+// Health check
+app.get('/', (req, res) => {
+    res.send('Spotify Backend is running successfully!');
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
