@@ -10,4 +10,9 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/music', musicRoutes);
 
+// Backend health check
+app.get('/', (req, res) => {
+    res.status(200).send('Spotify Backend is running successfully!');
+});
+
 module.exports = app;
